@@ -1,0 +1,6 @@
+files:
+  - ~/.zshrc
+  - ~/.amethyst.yml
+
+folders:
+  - /Users/longyuxi/.config/nvim

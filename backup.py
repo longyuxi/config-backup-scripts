@@ -20,6 +20,10 @@ def copy_files_specified_by_yaml(yaml_file, destination_folder):
     for file in files:
         shutil.copy(file, destination_folder)
 
+    # Copy folders
+    for folder in folders:
+        shutil.copytree(folder, destination_folder / folder.name)
+
 def generate_brew_list(destination_folder):
     # Capture output of cat ~/.zsh_history | grep brew
     cat = subprocess.Popen(('cat', str(Path('~/.zsh_history').expanduser())), stdout=subprocess.PIPE)
@@ -48,7 +52,7 @@ def generate_conda_list(destination_folder):
             f.write(env_export)
 
 
-def upload(source_folder, destination_folder, temporary_folder='tempupload', compress=False, use_absolute_paths_in_archive=False, folder_size_threshold_gb=1, number_to_keep=10):
+def upload(source_folder, destination_folder, temporary_folder=Path('/Users/longyuxi/Downloads/temp-upload'), compress=False, use_absolute_paths_in_archive=False, folder_size_threshold_gb=1, number_to_keep=10):
     uploadutils.make_archives(
         source_folder,
         folder_size_threshold_gb=folder_size_threshold_gb,
@@ -63,7 +67,7 @@ if __name__ == '__main__':
         TEMPORARY_FOLDER = Path('/Users/longyuxi/Downloads/config-backup-temporary-folder')
         TEMPORARY_FOLDER.mkdir(exist_ok=True)
 
-        INCLUDE_YAML = Path('mac-include.yaml')
+        INCLUDE_YAML = Path(__file__).parent / Path('mac-include.yaml')
 
         copy_files_specified_by_yaml(INCLUDE_YAML, TEMPORARY_FOLDER)
         generate_brew_list(TEMPORARY_FOLDER)

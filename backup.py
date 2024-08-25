@@ -37,7 +37,12 @@ def generate_conda_list(destination_folder):
     envs_save_folder = destination_folder / 'conda_envs'
     envs_save_folder.mkdir(exist_ok=True)
 
-    conda_exe = '/Users/longyuxi/miniforge3/condabin/mamba'
+    if platform.node() == 'Prix.local':
+        conda_exe = '/Users/longyuxi/miniforge3/condabin/mamba'
+    elif platform.node() == '1080-ubuntu':
+        conda_exe = '/home/longyuxi/mambaforge/condabin/mamba'
+    else:
+        raise NotImplementedError
 
     envs_json = subprocess.check_output([conda_exe, 'env', 'list', '--json'])
     envs = json.loads(envs_json)
@@ -52,7 +57,7 @@ def generate_conda_list(destination_folder):
             f.write(env_export)
 
 
-def upload(source_folder, destination_folder, temporary_folder=Path('/Users/longyuxi/Downloads/temp-upload'), compress=False, use_absolute_paths_in_archive=False, folder_size_threshold_gb=1, number_to_keep=10):
+def upload(source_folder, destination_folder, temporary_folder=Path(__file__).parent / 'temp', compress=False, use_absolute_paths_in_archive=False, folder_size_threshold_gb=1, number_to_keep=10):
     uploadutils.make_archives(
         source_folder,
         folder_size_threshold_gb=folder_size_threshold_gb,
@@ -77,6 +82,22 @@ if __name__ == '__main__':
 
         upload(TEMPORARY_FOLDER, DESTINATION_FOLDER)
 
+    elif platform.node() == '1080-ubuntu':
+        TEMPORARY_FOLDER = Path('/home/longyuxi/Downloads/config-backup-temporary-folder')
+        shutil.rmtree(TEMPORARY_FOLDER, ignore_errors=True)
+        TEMPORARY_FOLDER.mkdir(exist_ok=True)
+
+        INCLUDE_YAML = Path(__file__).parent / Path('ubuntu-include.yaml')
+
+        copy_files_specified_by_yaml(INCLUDE_YAML, TEMPORARY_FOLDER)
+        generate_brew_list(TEMPORARY_FOLDER)
+        generate_conda_list(TEMPORARY_FOLDER)
+
+        DESTINATION_FOLDER =  'onedrive:backup/ubuntu/configs/'
+
+        upload(TEMPORARY_FOLDER, DESTINATION_FOLDER)
+
 
     else:
+        print(platform.node(), 'is not implemented')
         raise NotImplementedError

@@ -9,6 +9,8 @@ def du(path):
     """
     if platform.system() == 'Darwin':
         return int(subprocess.check_output(['du','-sk', path]).split()[0].decode('utf-8')) * 1024
+    elif platform.system() == 'Linux':
+        return int(subprocess.check_output(['du','-sb', path]).split()[0].decode('utf-8'))
     else:
         raise NotImplementedError
 

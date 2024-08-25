@@ -1,0 +1,5 @@
+files:
+  - ~/.zshrc
+
+folders:
+  - /home/longyuxi/config-backup-scripts

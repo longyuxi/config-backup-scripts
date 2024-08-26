@@ -3,3 +3,5 @@ files:
 
 folders:
   - /home/longyuxi/config-backup-scripts
+  - /home/longyuxi/.config/i3
+  - /home/longyuxi/.config/i3status

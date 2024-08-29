@@ -70,6 +70,9 @@ def upload(source_folder, destination_folder, temporary_folder=Path(__file__).pa
 if __name__ == '__main__':
     if platform.node() == 'Prix.local':
         TEMPORARY_FOLDER = Path('/Users/longyuxi/Downloads/config-backup-temporary-folder')
+        # Delete if exists
+        if TEMPORARY_FOLDER.exists():
+            shutil.rmtree(TEMPORARY_FOLDER, ignore_errors=True)
         TEMPORARY_FOLDER.mkdir(exist_ok=True)
 
         INCLUDE_YAML = Path(__file__).parent / Path('mac-include.yaml')
